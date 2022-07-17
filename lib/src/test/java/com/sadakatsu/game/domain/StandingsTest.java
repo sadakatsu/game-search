@@ -348,6 +348,93 @@ public class StandingsTest {
         }
     }
 
+    @Test
+    public void contemplation() {
+        final var examples = Lists.newArrayList(
+            new FooStandings(3, 10, 8,-1),
+            new FooStandings(7, 5, 2, -1),
+            new FooStandings(9, 4, 1, -1),
+            new FooStandings(5, 4, 9, -1),
+            new FooStandings(8, 1, 9, -1),
+            new FooStandings(8, 5, 3, -1),
+            new FooStandings(5, 7, 7, -1),
+            new FooStandings(9, 6, 2, -1),
+            new FooStandings(8, 6, 3, -1),
+            new FooStandings(6, 9, 8, -1),
+            new FooStandings(4, 6, 4, -1),
+            new FooStandings(8, 7, 5, -1),
+            new FooStandings(8, 1, 10, -1),
+            new FooStandings(5, 4, 2, -1),
+            new FooStandings(3, 8, 2, -1),
+            new FooStandings(5, 1, 6, -1),
+            new FooStandings(6, 5, 5, -1),
+            new FooStandings(2, 7, 10, -1),
+            new FooStandings(7, 2, 2, -1),
+            new FooStandings(5, 4, 2, -1),
+            new FooStandings(3, 1, 10, -1),
+            new FooStandings(9, 1, 4, -1),
+            new FooStandings(4, 7, 4, -1),
+            new FooStandings(3, 5, 4, -1),
+            new FooStandings(10, 6, 6, -1),
+            new FooStandings(6, 3, 6, -1),
+            new FooStandings(1, 8, 4, -1),
+            new FooStandings(4, 3, 6, -1),
+            new FooStandings(6, 1, 5, -1),
+            new FooStandings(6, 6, 6, -1),
+            new FooStandings(10, 7, 1, -1),
+            new FooStandings(7, 9, 8, -1),
+            new FooStandings(5, 5, 1, -1),
+            new FooStandings(5, 5, 8, -1),
+            new FooStandings(6, 8, 10, -1),
+            new FooStandings(9, 2, 7, -1),
+            new FooStandings(9, 5, 4, -1),
+            new FooStandings(8, 8, 7, -1),
+            new FooStandings(4, 6, 2, -1),
+            new FooStandings(9, 3, 3, -1),
+            new FooStandings(8, 4, 9, -1),
+            new FooStandings(4, 10, 2, -1),
+            new FooStandings(10, 6, 6, -1),
+            new FooStandings(2, 1, 10, -1),
+            new FooStandings(5, 10, 7, -1),
+            new FooStandings(5, 7, 1, -1),
+            new FooStandings(4, 4, 10, -1),
+            new FooStandings(3, 7, 6, -1),
+            new FooStandings(2, 8, 7, -1),
+            new FooStandings(7, 8, 9, -1),
+            new FooStandings(5, 7, 2, -1),
+            new FooStandings(6, 6, 4, -1),
+            new FooStandings(6, 9, 8, -1),
+            new FooStandings(1, 10, 7, -1),
+            new FooStandings(9, 10, 6, -1),
+            new FooStandings(8, 3, 5, -1),
+            new FooStandings(3, 3, 3, -1),
+            new FooStandings(8, 3, 4, -1),
+            new FooStandings(3, 9, 5, -1),
+            new FooStandings(6, 6, 7, -1),
+            new FooStandings(9, 8, 8, -1),
+            new FooStandings(8, 7, 3, -1),
+            new FooStandings(1, 8, 6, -1),
+            new FooStandings(1, 3, 6, -1)
+        );
+
+        for (final var participant : examples.get(0).getParticipants()) {
+            examples.sort((lhs, rhs) -> lhs.compareAgainst(rhs, participant));
+            System.out.format("%s:%n", participant);
+            System.out.format("Worst: %s%n", examples.get(0).represent(participant));
+            System.out.format("Best: %s%n", examples.get(examples.size() - 1).represent(participant));
+            for (var i = 0; i < examples.size(); ++i) {
+                System.out.format(" - %02d: %s%n", examples.size() - i, examples.get(i).represent(participant));
+            }
+            System.out.println();
+        }
+
+
+        //        | max^n | paranoid | f(1) | f(2) | f(3) | p(1) | p(2) | p(3)
+        // FIRST  | #21   | #48      | 28   | 19   | 17   | 43.8 | 29.7 | 26.6
+        // SECOND | #32   | #19      | 26   | 24   | 14   | 40.6 | 37.5 | 21.9
+        // THIRD  | #27   | #25      | 19   | 25   | 20   | 29.7 | 39.1 | 31.3
+    }
+
     private static final FooPlayer[] allPlayersArray = FooPlayer.values();
     private static final Set<FooPlayer> allPlayersSet = Sets.newHashSet(allPlayersArray);
 

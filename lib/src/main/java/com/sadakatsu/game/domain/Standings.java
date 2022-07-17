@@ -153,38 +153,56 @@ public interface Standings<
      * the two are equivalent, and negative if this Standings is worse.
      * </p>
      * <p>
-     * This interface provides a default implementation that should lead to proper minimax comparisons for almost every
-     * game.  It uses the following hierarchy of checks to determine which Standings is better.  If these checks do not
-     * make sense for one's game, this method must be overridden.
+     * The Standings class provides a default implementation that is likely to provide optimal minimax sorting in every
+     * case.  It uses the following hierarchical reasoning to convert any game into a zero-sum game.
      * </p>
      * <ol>
+     *     <li>It is better to rank higher than lower.  First place is much better than Nth.</li>
      *     <li>
-     *         Is the passed Standings null?  this is always better than null.
+     *         It is better to share one's rank with as few players as possible.  Sharing one's rank with zero players
+     *         is much better than sharing it with N-1 players.  However, by the first rule, it is better to rank
+     *         higher and share that rank than to rank lower.
      *     </li>
      *     <li>
-     *         Does the passed Player have a better ranking in one Standings than the other?  Maximizing one's rating is
-     *         the most likely path to lead to winning.
-     *     </li>
-     *     <li>
-     *         Does the passed Player have sole leadership in one of the Standings and not the other?  Being the sole
-     *         winner is better than tying.
-     *     </li>
-     *     <li>
-     *         For each Standings, build a list of pairwise comparisons between the current Player's score and every
-     *         other Player's score, sorted by the Players' rankings.  Does the Player score better than his opponents
-     *         in one of the Standings?  For example, with differences (-3, -2, 0, 4) and (-3, -2, 0, 10), the current
-     *         Player is in third place for both Standings, but scores 6 points better than fourth place in the second.
-     *     </li>
-     *     <li>
-     *         Does the passed Player score better in one Standings than the other?
+     *         If one has ranked lower than other players, it is better to have prevented as many of them as possible
+     *         from tying each other, as it means one has failed in damaging their performances as much as possible.
      *     </li>
      * </ol>
      * <p>
-     * It should be worth noting that this method does not care how each individual participant performs, and therefore
-     * does not represent a total ordering.  This is intentional.  If two Standings compare as equal for the passed
-     * Player, they are mutually non-dominated.  Either is equally acceptable to the current Player.  The algorithm
-     * should not be configured to punish any specific Player.  Each minimax agent should naturally assume that everyone
-     * is trying to drive him into his worst-case outcome and therefore maximize that result.
+     * Note that these rules say nothing about how to evaluate a player's opponents that ranked worse than the opponent.
+     * I found that freezing a player's gain/loss in reference to those players' performances eliminates strategies
+     * where losing players accept worse point-based performances to hurt the leaders' gains more.  This ensures the
+     * game remains competitive.
+     * </p>
+     * <p>
+     * Here is an example conversion of a four-player game into a zero-sum game using these concepts.  Such a gain/loss
+     * system guarantees that rational agents will try to rank as well as possible:
+     * </p>
+     * <ol>
+     *     <li>First place, not shared : (1, ?, ?, ?) : +39 </li>
+     *     <li>First place, shared with one : (1, 1, ?, ?) : +23</li>
+     *     <li>First place, shared with two : (1, 1, 1, 4) : +9</li>
+     *     <li>Draw (four-way tie) : (1, 1, 1, 1) : +0</li>
+     *     <li>Second place, not shared : (2, 1, ?, ?) : -1</li>
+     *     <li>Second place, shared with one : (2, 1, 2, 4) : -7</li>
+     *     <li>Second place, shared with two : (2, 1, 2, 2) : -13</li>
+     *     <li>Third place, not shared, held player back in second : (3, 1, 2, 4) : -14</li>
+     *     <li>Third place, shared, held player back in second : (3, 1, 2, 3) : -19</li>
+     *     <li>Third place, not shared, allowed tie for first : (3, 1, 1, 4): -20</li>
+     *     <li>Third place, shared, allowed tie for first : (3, 1, 1, 3): -23</li>
+     *     <li>Last place, permitted no ties : (4, 1, 2, 3) : -24</li>
+     *     <li>Last place, allowed tie for second : (4, 1, 2, 2) : -25</li>
+     *     <li>Last place, allowed two-way tie for first : (4, 1, 1, 3) : -26</li>
+     *     <li>Last place, allowed three-way tie for first : (4, 1, 1, 1) : -27</li>
+     * </ol>
+     * <p>
+     * Let's suppose that one player places first, two tie for second, and the fourth takes fourth place.  The sum of
+     * gains and losses by this scheme is 39 - 7 - 7 - 25 = 0.  All three of the last place players would have preferred
+     * that one of the two second place players had not tied.  However, neither of the second place players nor the
+     * fourth place managed to force one of them to rank worse, so all of them performed worse than they could have.
+     * If they had, the sum would be 39 - 1 - 14 - 24 = 0; the third place has performed worse, and second and fourth
+     * place have performed better.  Nobody was able to touch first place's performance, so his gain remains untouched.
+     * This means there are opportu
      * </p>
      * @param that the Standings against which to compare this Standings's results
      * @param player the Player from whose perspective the two Standings must be compared
