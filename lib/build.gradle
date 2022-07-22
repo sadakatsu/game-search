@@ -24,6 +24,7 @@ dependencies {
     api 'com.google.guava:guava:31.1-jre'
     api 'org.apache.commons:commons-collections4:4.4'
     api 'org.apache.commons:commons-lang3:3.12.0'
+    api 'javax.validation:validation-api:2.0.1.Final'
 
     // TESTING /////////////////////////////////////////////////////////////////////////////////////////////////////////
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
